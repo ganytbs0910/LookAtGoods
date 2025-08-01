@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>商品検索システム</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+            background-color: #f3f4f6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .search-highlight {
+            background-color: #fef3c7;
+            padding: 1px 2px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState } = React;
+
+        const SearchIcon = () => (
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="21 21l-4.35-4.35"></path>
+            </svg>
+        );
+
+        const ProductSearchSystem = () => {
+            const [searchQuery, setSearchQuery] = useState('');
+            const [searchResults, setSearchResults] = useState([]);
+
+            // 商品データ
+            const productData = [
+                { code: '0230700510', name: 'リングパッキン', model: 'GHS-65-A', spec: '該当なし', price: '', purchase: '' },
+                { code: '023503830210', name: '排気弁', model: '1B GHS-65-A', spec: '', price: '6,890', purchase: '6200' },
+                { code: '023503830211A', name: 'リングパッキン', model: '6×24 排気弁 GHS-65-A', spec: '30700510', price: '460', purchase: '410' },
+                { code: '023501010210', name: 'ケーシング', model: 'GS-65 GHS-65-A', spec: '', price: '78,670', purchase: '70800' },
+                { code: '023501210911', name: 'ケーシングカバー', model: 'GS-65-M GHS-65-A', spec: '', price: '40,000', purchase: '35200' },
+                { code: '023513041721', name: 'インペラ', model: 'GS-178 GHS-65-A', spec: '', price: '13,780', purchase: '12400' },
+                { code: '023514000510', name: '羽根車ワッシャ', model: 'B-18 GHS-65-A', spec: '', price: '390', purchase: '350' },
+                { code: '023515003110', name: '主軸', model: 'S-24×347 GHS-65-A', spec: '', price: '18,560', purchase: '16700' },
+                { code: '023516600310', name: '水切つばA', model: 'RA-25 GHS-65', spec: '16640710', price: '938', purchase: '800' },
+                { code: '023516600410', name: '水切つばB', model: 'RA-25 GHS-65', spec: '16640810', price: '938', purchase: '800' },
+                { code: '023517002910', name: 'ガイドベーン', model: 'GS-656-M7.5 GHS-65-A', spec: '', price: '19,120', purchase: '17200' },
+                { code: '023518004111', name: 'パッキン押え', model: 'B-26 GHS-65-A', spec: '', price: '3,890', purchase: '3500' },
+                { code: '023526800910', name: '弁座付連結管', model: '65 GHS-65-A', spec: '', price: '16,670', purchase: '15000' },
+                { code: '023527002410', name: 'フランジ', model: '65-10KL GHS-65-A', spec: '', price: '4,890', purchase: '4400' },
+                { code: '023527002512', name: 'アラボ', model: '3/8 GHS-65-A', spec: '', price: '133', purchase: '120' },
+                { code: '023527020110', name: '排気用フラグ', model: '1 GHS-65-A', spec: '', price: '1,780', purchase: '1600' },
+                { code: '023527020410', name: 'アラグ', model: '1 GHS-65-A (パッキン付)白色', spec: '工場から出荷', price: '470', purchase: '420' },
+                { code: '023527020412', name: 'アラグ', model: '1 GHS-65-A (パッキン付)黒色', spec: '28706410', price: '500', purchase: '450' },
+                { code: '023530303010', name: 'グランドパッキン', model: 'GHS-65-A', spec: '4527L-25', price: '1,070', purchase: '960' },
+                { code: '023530400915', name: 'Oリング', model: 'AN6230-19 GHS-65-A', spec: '', price: '280', purchase: '250' },
+                { code: '023530703210', name: 'リングパッキン', model: '32.5×45 GHS-65-A', spec: '', price: '230', purchase: '200' },
+                { code: '023531700920', name: '弁体付弁パッキン', model: '65 GHS-65-A', spec: '', price: '2,250', purchase: '1900' },
+                { code: '023535207775', name: '玉軸受', model: '6306ZZ GHS-65-A', spec: '2.35035E+11', price: '2,340', purchase: '2100' },
+                { code: '023535400910', name: '軸受箱', model: 'GS-M GHS-65-A', spec: '', price: '30,230', purchase: '27200' },
+                { code: '023535620810', name: '軸受カバー', model: 'GHS-65-A', spec: '35620820', price: '2,560', purchase: '2300' },
+                { code: '023536400113', name: 'ボルト', model: 'M6×12 GHS-65-A', spec: '', price: '78', purchase: '70' },
+                { code: '023536400313', name: 'ボルト', model: 'M10×20 GHS-65-A', spec: '', price: '78', purchase: '70' },
+                { code: '023536400414', name: 'ボルト', model: 'M12×30 GHS-65-A', spec: '', price: '78', purchase: '70' },
+                { code: '023536400432', name: 'ボルト', model: 'M12×55 GHS-65-A', spec: '', price: '122', purchase: '110' },
+                { code: '023536400515', name: 'ボルト', model: 'M16×40 GHS-65-A', spec: '', price: '133', purchase: '120' },
+                { code: '023536461016', name: '両ネジボルト', model: 'M8×25 GHS-65-A', spec: '', price: '150', purchase: '130' },
+                { code: '023537000116', name: 'ナット', model: 'M12 GHS-65-A', spec: '', price: '67', purchase: '60' },
+                { code: '023537000514', name: 'ナット', model: 'M8 GHS-65-A', spec: '', price: '75', purchase: '60' },
+                { code: '023537000517', name: 'ナット', model: 'M16 GHS-65-A', spec: '', price: '225', purchase: '200' },
+                { code: '023539001313', name: 'キー', model: '5×5×25 GHS-65-A', spec: '', price: '344', purchase: '310' },
+                { code: '023539050312', name: 'キー', model: '8×7×40 GHS-65-A', spec: '', price: '267', purchase: '240' },
+                { code: '023503830510', name: '排気弁', model: '1/4-20K', spec: '03830510 K-506X3-E', price: '6,230', purchase: '5600' },
+                { code: '023511005210', name: '吸込ケーシング', model: '50', spec: '11005210 K-506X3-E 納期約20日', price: '155,560', purchase: '140000' },
+                { code: '023511206012', name: '中間ケーシング', model: '', spec: '11206012 K-506X3-E 納期約20日', price: '31,750', purchase: '28000' },
+                { code: '023511206020', name: '中間ケーシング', model: '', spec: '11206020 K-506X3-E 納期約20日', price: '31,125', purchase: '28000' },
+                { code: '023511400612', name: '吐出ケーシング', model: '40', spec: '11400612 K-506X3-E 納期約20日', price: '133,750', purchase: '118000' },
+                { code: '023515209010', name: '主軸', model: 'M-28X675', spec: '15209010 K-506X3-E', price: '87,560', purchase: '78800' },
+                { code: '023516002710', name: 'スリーブ', model: 'B-24', spec: '16002710 K-506X3-E', price: '11,560', purchase: '10400' },
+                { code: '023516022620', name: 'スリーブ', model: 'S-16', spec: '16022620 K-506X3-E', price: '9,560', purchase: '8600' },
+                { code: '023516023110', name: 'スリーブ', model: 'S-24', spec: '16023110 K-506X3-E', price: '18,000', purchase: '16200' },
+                { code: '023516023111', name: 'スリーブ', model: 'S-24', spec: '16023111 K-506X3-E', price: '18,000', purchase: '16200' },
+                { code: '023516240011', name: '調整リング', model: 'S-30', spec: '16240011 K-506X3-E', price: '5,000', purchase: '4500' },
+                { code: '023516621810', name: '水切つば', model: 'RC-30', spec: 'K-506X3-E', price: '890', purchase: '800' },
+                { code: '023516621910', name: '水切つば', model: 'RC-35', spec: 'K-506X3-E 16641910', price: '2,230', purchase: '2000' },
+                { code: '023516622010', name: '水切つば', model: 'RC-35', spec: 'K-506X3-E 16641910', price: '2,230', purchase: '2000' },
+                { code: '023516623410', name: '水切つば', model: 'RC-22', spec: 'K-506X3-E 16642410', price: '1,340', purchase: '1200' },
+                { code: '023516623420', name: '水切つば', model: 'RC-22', spec: 'K-506X3-E 16642420', price: '1,340', purchase: '1200' },
+                { code: '023517108110', name: 'ガイドベーン', model: 'K', spec: '17108110 K-506X3-E', price: '27,900', purchase: '25100' },
+                { code: '023517108210', name: 'ガイドベーン', model: 'K', spec: '17108210 K-506X3-E', price: '16,890', purchase: '15200' },
+                { code: '023518002710', name: 'パッキン押え', model: 'B-36', spec: '18002710 K-506X3-E', price: '5,890', purchase: '5300' },
+                { code: '023518004310', name: 'パッキン押え', model: 'B-36', spec: '18004310 K-506X3-E', price: '7,120', purchase: '6400' },
+                { code: '023518201820', name: 'ランタンリング', model: '35', spec: '18201820 K-506X3-E', price: '8,000', purchase: '7200' },
+                { code: '023519500512', name: 'アンカット', model: '', spec: '19500512 K-506X3-E', price: '41,340', purchase: '37200' },
+                { code: '023519500522', name: 'アンカット', model: '', spec: '19500522 K-506X3-E', price: '41,340', purchase: '37200' },
+                { code: '023525300161', name: '直管', model: '6X64', spec: '25300161 K-506X3-E', price: '1,780', purchase: '1600' },
+                { code: '023525300162', name: '直管', model: '6X125', spec: '25300162 K-506X3-E', price: '1,890', purchase: '1700' },
+                { code: '023528050113', name: 'メカシコメスネジ', model: '1/2', spec: '28050113 K-506X3-E', price: '400', purchase: '360' },
+                { code: '023528700511', name: 'アジラブ', model: '1/4', spec: '28700511 K-506X3-E', price: '133', purchase: '120' },
+                { code: '023528700513', name: 'アジラブ', model: '1/2', spec: '28700513 K-506X3-E', price: '222', purchase: '200' },
+                { code: '023529200210', name: 'チューブカップリング', model: '8', spec: '29200210 K-506X3-E', price: '1,500', purchase: '1300' },
+                { code: '023529200710', name: 'チューブカップリング', model: '10', spec: '29200710 K-506X3-E', price: '1,340', purchase: '1200' },
+                { code: '023529201410', name: 'チューブカップリング', model: '8', spec: '29201410 K-506X3-E', price: '2,560', purchase: '2300' },
+                { code: '023530301513', name: 'グランドパッキン', model: '6502L-35', spec: '30301513 K-506X3-E', price: '840', purchase: '750' },
+                { code: '023530400135', name: 'Oリング', model: 'G135', spec: '30400135 K-506X3-E', price: '280', purchase: '250' },
+                { code: '023530400318', name: 'Oリング', model: 'K235', spec: '30400318 K-506X3-E', price: '520', purchase: '460' },
+                { code: '023530401127', name: 'Oリング', model: 'S24', spec: '30401127 K-506X3-E', price: '188', purchase: '160' },
+                { code: '023535200516', name: '玉軸受', model: '6306ZZC3', spec: '35200516 K-506X3-E', price: '1,890', purchase: '1700' },
+                { code: '023535200517', name: '玉軸受', model: '6307ZZC3', spec: '35200517 K-506X3-E', price: '2,450', purchase: '2200' },
+                { code: '023535402510', name: '軸受箱', model: '80', spec: '35402510 K-506X3-E', price: '19,890', purchase: '17900' },
+                { code: '023535402612', name: '軸受箱', model: '72', spec: '35402612 K-506X3-E', price: '17,340', purchase: '15600' },
+                { code: '023535663610', name: '軸受カバー', model: '100', spec: '35663610 K-506X3-E 注文後5日必要', price: '1,230', purchase: '1100' },
+                { code: '023536400111', name: 'ボルト', model: 'M6X8', spec: '36400111 K-506X3-E', price: '78', purchase: '70' },
+                { code: '023536400214', name: 'ボルト', model: 'M8X20', spec: '36400214 K-506X3-E', price: '78', purchase: '70' },
+                { code: '023536401216', name: 'ボルト', model: 'M8X30', spec: '36401216 K-506X3-E', price: '122', purchase: '110' },
+                { code: '023536450618', name: '両ねじボルト', model: 'M10X35', spec: '36450618 K-506X3-E', price: '225', purchase: '200' },
+                { code: '023536462024', name: '両ねじボルト', model: 'M24X245', spec: '36462024 K-506X3-E', price: '1,340', purchase: '1200' },
+                { code: '023537000120', name: 'ナット', model: 'M24', spec: '37000120 K-506X3-E', price: '200', purchase: '180' },
+                { code: '023537000915', name: 'ナット', model: 'M10', spec: '37000915 K-506X3-E', price: '113', purchase: '90' },
+                { code: '023537000917', name: 'ナット', model: 'M16', spec: '37000917 K-506X3-E', price: '150', purchase: '130' },
+                { code: '023537021510', name: 'ネジナット', model: 'M24', spec: '37021510 K-506X3-E', price: '4,375', purchase: '3900' },
+                { code: '023537411910', name: '平座金', model: '17X44', spec: '37411910 K-506X3-E', price: '3,120', purchase: '2800' },
+                { code: '023537450117', name: '内歯付座金', model: '16', spec: '37450117 K-506X3-E', price: '133', purchase: '120' },
+                { code: '023539001312', name: 'キー', model: '5X5X20', spec: '39001312 K-506X3-E', price: '344', purchase: '310' },
+                { code: '023539001411', name: 'キー', model: '6X6X40', spec: '39001411 K-506X3-E', price: '500', purchase: '450' },
+                { code: '023539003410', name: 'キー', model: '6X6X56', spec: '39003410 K-506X3-E', price: '756', purchase: '680' },
+                { code: '023539200228', name: '止め輪', model: '30', spec: '39200228 K-506X3-E', price: '189', purchase: '170' },
+                { code: '023520000001', name: 'インペラ', model: 'K-150', spec: '87800000,K-506X3-E,減込側', price: '115,230', purchase: '103700' },
+                { code: '023520000002', name: 'インペラ', model: 'K-130', spec: '87800000,K-506X3-E', price: '115,230', purchase: '103700' },
+                { code: '023501350800', name: 'インペラ', model: 'K', spec: 'K-505GX5-E,要耐圧試験の為納期約20日', price: '85,560', purchase: '77000' },
+                { code: '023501520210', name: '主軸', model: 'M-28X795', spec: 'K-505GX5-E,要塗装のため納期約5日', price: '142,230', purchase: '128000' },
+                { code: '023502530164', name: '直管', model: '6×245', spec: 'K-505GX5-E,要塗装のため納期約5日', price: '1,230', purchase: '1100' },
+                { code: '023503520116', name: '玉軸受', model: '6306ZZC3AC (アシオクリーブ)', spec: 'K-505GX5-E', price: '2,670', purchase: '2400' },
+                { code: '023503520117', name: '玉軸受', model: '6307ZZC3AC (アシオクリーブ)', spec: 'K-505GX5-E', price: '2,670', purchase: '2400' },
+                { code: '023503645026', name: '両ねじボルト', model: 'M24×365', spec: 'K-505GX5-E,要塗装のため納期約5日', price: '1,780', purchase: '1600' }
+            ];
+
+            // 日本語の商品名を抽出する関数
+            const extractJapaneseName = (name) => {
+                // 日本語（ひらがな、カタカナ、漢字）を抽出
+                const match = name.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+/g);
+                return match ? match.join('') : '';
+            };
+
+            // 検索処理
+            const handleSearch = () => {
+                const query = searchQuery.toLowerCase();
+
+                if (!query) {
+                    setSearchResults([]);
+                    return;
+                }
+
+                const results = productData.filter(item => {
+                    const japaneseName = extractJapaneseName(item.name);
+                    // 商品名称（日本語部分）のみで検索
+                    return japaneseName.toLowerCase().includes(query) ||
+                        item.name.toLowerCase().includes(query);
+                });
+
+                setSearchResults(results);
+            };
+
+            const handleKeyPress = (e) => {
+                if (e.key === 'Enter') {
+                    handleSearch();
+                }
+            };
+
+            // 検索語をハイライト表示する関数
+            const highlightSearchTerm = (text, searchTerm) => {
+                if (!searchTerm) return text;
+
+                const regex = new RegExp(`(${searchTerm})`, 'gi');
+                const parts = text.split(regex);
+
+                return parts.map((part, index) =>
+                    regex.test(part) ?
+                        <span key={index} className="search-highlight">{part}</span> :
+                        part
+                );
+            };
+
+            return (
+                <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
+                    <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
+                        商品検索システム
+                    </h1>
+
+                    <div className="mb-6">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                onKeyPress={handleKeyPress}
+                                placeholder="商品名を入力してください（例：排気弁、ナット、ボルト、水切つば）"
+                                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-lg"
+                            />
+                            <button
+                                onClick={handleSearch}
+                                className="absolute right-2 top-1/2 transform -translate-y-1/2 p-2 text-gray-500 hover:text-blue-600 transition-colors"
+                            >
+                                <SearchIcon />
+                            </button>
+                        </div>
+                    </div>
+
+                    <button
+                        onClick={handleSearch}
+                        className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors font-medium mb-6 text-lg"
+                    >
+                        検索
+                    </button>
+
+                    {searchResults.length > 0 && (
+                        <div className="space-y-4">
+                            <h2 className="text-xl font-semibold text-gray-700 mb-4">
+                                検索結果: {searchResults.length}件
+                            </h2>
+                            <div className="overflow-x-auto">
+                                <table className="min-w-full bg-white border border-gray-200">
+                                    <thead>
+                                        <tr className="bg-gray-50">
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">商品コード</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">商品名称</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">型式</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">仕様</th>
+                                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider border-b">単価</th>
+                                            <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider border-b">仕入れ</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody className="divide-y divide-gray-200">
+                                        {searchResults.map((item, index) => (
+                                            <tr key={index} className="hover:bg-gray-50">
+                                                <td className="px-4 py-3 text-sm text-blue-600 font-mono">{item.code}</td>
+                                                <td className="px-4 py-3 text-sm font-medium text-gray-900">
+                                                    {highlightSearchTerm(item.name, searchQuery)}
+                                                </td>
+                                                <td className="px-4 py-3 text-sm text-gray-600">{item.model}</td>
+                                                <td className="px-4 py-3 text-sm text-gray-600">{item.spec || '-'}</td>
+                                                <td className="px-4 py-3 text-sm text-right font-semibold text-green-600">
+                                                    {item.price ? `¥${item.price}` : '-'}
+                                                </td>
+                                                <td className="px-4 py-3 text-sm text-right text-gray-600">
+                                                    {item.purchase ? `¥${item.purchase}` : '-'}
+                                                </td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    )}
+
+                    {searchQuery && searchResults.length === 0 && (
+                        <div className="text-center text-gray-500 py-12">
+                            <p className="text-lg">「{searchQuery}」に該当する商品が見つかりませんでした。</p>
+                            <p className="text-sm mt-2">別のキーワードでお試しください。</p>
+                        </div>
+                    )}
+
+                    <div className="mt-8 text-sm text-gray-600">
+                        <p>※ 商品名の日本語部分（ひらがな、カタカナ、漢字）で検索できます。</p>
+                    </div>
+                </div>
+            );
+        };
+
+        ReactDOM.render(<ProductSearchSystem />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
