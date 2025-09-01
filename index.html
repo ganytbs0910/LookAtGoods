@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>商品検索システム</title>
+    <title>部品番号検索</title>
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
@@ -57,19 +57,19 @@
                 { code: '16640810', name: '水切つばB', model: 'RA-25 GHS-65', spec: '', price: '938', purchase: '800' },
                 { code: '17002910', name: 'ガイドベーン', model: 'GS-656-M7.5 GHS-65-A', spec: '', price: '19,120', purchase: '17,200' },
                 { code: '18004111', name: 'パッキン押え', model: 'GHS-65-A', spec: 'B-26', price: '3,890', purchase: '3,500' },
-                { code: '26800910', name: '弁座付連結管', model: 'GHS-65-A', spec: '65', price: '16,670', purchase: '15000' },
+                { code: '26800910', name: '弁座付連結管', model: 'GHS-65-A', spec: '65', price: '16,670', purchase: '15,000' },
                 { code: '27002410', name: 'フランジ', model: 'GHS-65-A', spec: '65-10KL', price: '4,890', purchase: '4,400' },
                 { code: '28700512', name: 'プラグ', model: 'GHS-65-A', spec: '3/8', price: '133', purchase: '120' },
                 { code: '28702010', name: '排気用プラグ1', model: 'GHS-65-A', spec: '', price: '1,780', purchase: '1,600' },
                 { code: '28702410', name: 'プラグ1', model: 'GHS-65-A ', spec: '(パッキン付)白色 工場から出荷', price: '470', purchase: '420' },
-                { code: '28702412', name: 'プラグ1', model: 'GHS-65-A', spec: '(パッキン付)黒色 4527L-25', price: '500', purchase: '450' },
+                { code: '28702412(28706410)', name: 'プラグ1', model: 'GHS-65-A', spec: '(パッキン付)黒色', price: '500', purchase: '450' },
                 { code: '30303010', name: 'グランドパッキン', model: 'GHS-65-A', spec: '4527L-25', price: '1,070', purchase: '960' },
                 { code: '30400915', name: 'Oリング', model: 'GHS-65-A', spec: 'AN6230-19', price: '280', purchase: '250' },
                 { code: '30703210', name: 'リングパッキン', model: 'GHS-65-A', spec: '32.5×45', price: '230', purchase: '200' },
                 { code: '31700920', name: '弁体付角パッキン', model: 'GHS-65-A', spec: '65', price: '2,250', purchase: '1,900' },
                 { code: '35201916', name: '玉軸受', model: 'GHS-65-A', spec: '6306ZZ 2.35035E+11', price: '2,340', purchase: '2,100' },
                 { code: '35400910', name: '軸受箱', model: 'GHS-65-A', spec: 'GS-M', price: '30,230', purchase: '27,200' },
-                { code: '35620820', name: '軸受カバー', model: 'GHS-65-A', spec: '', price: '2,560', purchase: '2,300' },
+                { code: '35620810(35620820)', name: '軸受カバー', model: 'GHS-65-A', spec: '', price: '2,560', purchase: '2,300' },
                 { code: '36400113', name: 'ボルト', model: 'GHS-65-A', spec: 'M6×12', price: '78', purchase: '70' },
                 { code: '36400313', name: 'ボルト', model: ' GHS-65-A', spec: 'M10×20', price: '78', purchase: '70' },
                 { code: '36400414', name: 'ボルト', model: 'GHS-65-A', spec: 'M12×30', price: '78', purchase: '70' },
@@ -104,7 +104,7 @@
                 { code: '18201820', name: 'ランタンリング', model: 'K-506X3-E', spec: '35', price: '8,000', purchase: '7,200' },
                 { code: '19500512', name: 'ブラケット', model: 'K-506X3-E', spec: '', price: '41,340', purchase: '37,200' },
                 { code: '19500522', name: 'ブラケット', model: 'K-506X3-E', spec: '', price: '41,340', purchase: '37,200' },
-                { code: '25300161', name: '直管', model: 'K-506X3-E', spec: '6X64', price: '1,780', purchase: '1,600' },
+                { code: '25300161', name: '直管', model: 'K-506X3-E', spec: '6×64', price: '1,780', purchase: '1,600' },
                 { code: '25300162', name: '直管', model: 'K-506X3-E', spec: '6×125', price: '1,890', purchase: '1,700' },
                 { code: '28050113', name: 'メスオスエルボ', model: 'K-506X3-E', spec: '1/2', price: '400', purchase: '360' },
                 { code: '28700511', name: 'プラグ', model: 'K-506X3-E', spec: ' 1/4', price: '133', purchase: '120' },
@@ -115,22 +115,22 @@
                 { code: '30301513', name: 'グランドパッキン', model: 'K-506X3-E', spec: '6502L-35', price: '840', purchase: '750' },
                 { code: '30400135', name: 'Oリング', model: 'K-506X3-E', spec: 'G135', price: '280', purchase: '250' },
                 { code: '30400318', name: 'Oリング', model: 'K-506X3-E', spec: 'K235', price: '520', purchase: '460' },
-                { code: '30401127', name: 'Oリング', model: 'K-506X3-ES24', spec: 'S24', price: '188', purchase: '160' },
+                { code: '30401127', name: 'Oリング', model: 'K-506X3-E', spec: 'S24', price: '188', purchase: '160' },
                 { code: '35200516', name: '玉軸受', model: 'K-506X3-E', spec: '6306ZZC3', price: '1,890', purchase: '1,700' },
                 { code: '35200517', name: '玉軸受', model: 'K-506X3-E', spec: '6307ZZC3', price: '2,450', purchase: '2,200' },
                 { code: '35402510', name: '軸受箱', model: 'K-506X3-E', spec: '80', price: '19,890', purchase: '17,900' },
                 { code: '35402612', name: '軸受箱', model: 'K-506X3-E', spec: '72', price: '17,340', purchase: '15600' },
                 { code: '35663610', name: '軸受カバー', model: 'K-506X3-E', spec: '100  注文後5日必要', price: '1,230', purchase: '1,100' },
-                { code: '36400111', name: 'ボルト', model: 'K-506X3-E', spec: 'M6X8 ', price: '78', purchase: '70' },
-                { code: '36400214', name: 'ボルト', model: 'K-506X3-E', spec: 'M8X20 ', price: '78', purchase: '70' },
-                { code: '36401216', name: 'ボルト', model: 'K-506X3-E', spec: 'M8X30', price: '122', purchase: '110' },
-                { code: '36450618', name: '両ねじボルト', model: 'K-506X3-E', spec: 'M10X35', price: '225', purchase: '200' },
-                { code: '36462024', name: '両ねじボルト', model: 'K-506X3-E', spec: 'M24X245', price: '1,340', purchase: '1,200' },
+                { code: '36400111', name: 'ボルト', model: 'K-506X3-E', spec: 'M6×8 ', price: '78', purchase: '70' },
+                { code: '36400214', name: 'ボルト', model: 'K-506X3-E', spec: 'M8×20 ', price: '78', purchase: '70' },
+                { code: '36401216', name: 'ボルト', model: 'K-506X3-E', spec: 'M8×30', price: '122', purchase: '110' },
+                { code: '36450618', name: '両ねじボルト', model: 'K-506X3-E', spec: 'M10×35', price: '225', purchase: '200' },
+                { code: '36462024', name: '両ねじボルト', model: 'K-506X3-E', spec: 'M24×245', price: '1,340', purchase: '1,200' },
                 { code: '37000120', name: 'ナット', model: 'K-506X3-E', spec: 'M24', price: '200', purchase: '180' },
                 { code: '37000915', name: 'ナット', model: 'K-506X3-E', spec: 'M10', price: '113', purchase: '90' },
                 { code: '37000917', name: 'ナット', model: 'K-506X3-E', spec: 'M16', price: '150', purchase: '130' },
                 { code: '37021510', name: '丸ナット', model: 'K-506X3-E', spec: 'M24', price: '4,375', purchase: '3,900' },
-                { code: '37411910', name: '平座金', model: 'K-506X3-E', spec: '17X44 ', price: '3,120', purchase: '2,800' },
+                { code: '37411910', name: '平座金', model: 'K-506X3-E', spec: '17×44 ', price: '3,120', purchase: '2,800' },
                 { code: '37450117', name: '内歯付座金', model: 'K-506X3-E', spec: '16 ', price: '133', purchase: '120' },
                 { code: '39001312', name: 'キー', model: 'K-506X3-E', spec: '5X5X20 ', price: '344', purchase: '310' },
                 { code: '39001411', name: 'キー', model: 'K-506X3-E', spec: '6X6X40', price: '500', purchase: '450' },
@@ -193,6 +193,8 @@
             };
 
             return (
+
+
                 <div className="max-w-6xl mx-auto p-6 bg-white rounded-lg shadow-lg">
                     <h1 className="text-3xl font-bold text-gray-800 mb-8 text-center">
                         商品検索システム
@@ -215,6 +217,10 @@
                                 <SearchIcon />
                             </button>
                         </div>
+                        <div className="mt-2 text-gray-500 text-sm">
+                            例：<span className="inline-block bg-gray-100 rounded px-2 py-1 mr-2">00398-00-0002　資材課</span>
+                            <span className="inline-block bg-gray-100 rounded px-2 py-1">運賃1,500（部品）2,000（製品）</span>
+                        </div>
                     </div>
 
                     <button
@@ -233,8 +239,8 @@
                                 <table className="min-w-full bg-white border border-gray-200">
                                     <thead>
                                         <tr className="bg-gray-50">
-                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">商品コード</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">商品名称</th>
+                                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">商品コード</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">型式</th>
                                             <th className="px-4 py-3 text-left text-xs font-medium text-gray-700 uppercase tracking-wider border-b">仕様</th>
                                             <th className="px-4 py-3 text-right text-xs font-medium text-gray-700 uppercase tracking-wider border-b">単価</th>
@@ -244,10 +250,10 @@
                                     <tbody className="divide-y divide-gray-200">
                                         {searchResults.map((item, index) => (
                                             <tr key={index} className="hover:bg-gray-50">
-                                                <td className="px-4 py-3 text-sm text-blue-600 font-mono">{item.code}</td>
                                                 <td className="px-4 py-3 text-sm font-medium text-gray-900">
                                                     {highlightSearchTerm(item.name, searchQuery)}
                                                 </td>
+                                                <td className="px-4 py-3 text-sm text-blue-600 font-mono">{item.code}</td>
                                                 <td className="px-4 py-3 text-sm text-gray-600">{item.model}</td>
                                                 <td className="px-4 py-3 text-sm text-gray-600">{item.spec || '-'}</td>
                                                 <td className="px-4 py-3 text-sm text-right font-semibold text-green-600">
