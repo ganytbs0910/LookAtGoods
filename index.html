@@ -164,9 +164,12 @@
 
                 const results = productData.filter(item => {
                     const japaneseName = extractJapaneseName(item.name);
-                    // 商品名称（日本語部分）のみで検索
-                    return japaneseName.toLowerCase().includes(query) ||
-                        item.name.toLowerCase().includes(query);
+                    // 商品名称（日本語部分）、商品名全体、部品番号（code）で検索
+                    return (
+                        japaneseName.toLowerCase().includes(query) ||
+                        item.name.toLowerCase().includes(query) ||
+                        item.code.toLowerCase().includes(query)
+                    );
                 });
 
                 setSearchResults(results);
