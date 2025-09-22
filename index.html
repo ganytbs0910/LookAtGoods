@@ -152,6 +152,10 @@
                 const match = name.match(/[\u3040-\u309F\u30A0-\u30FF\u4E00-\u9FAF]+/g);
                 return match ? match.join('') : '';
             };
+                // ひらがな→カタカナ変換
+                const hiraToKana = (str) => str.replace(/[\u3040-\u309F]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60));
+                // カタカナ→ひらがな変換
+                const kanaToHira = (str) => str.replace(/[\u30A0-\u30FF]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 
             // 検索処理
             const handleSearch = () => {
@@ -161,6 +165,9 @@
                     setSearchResults([]);
                     return;
                 }
+
+                    const queryHira = kanaToHira(query);
+                    const queryKana = hiraToKana(query);
 
                 const results = productData.filter(item => {
                     const japaneseName = extractJapaneseName(item.name);
@@ -173,6 +180,14 @@
                 });
 
                 setSearchResults(results);
+                    const fields = [item.name, japaneseName, item.code].map(f => f.toLowerCase());
+                    const fieldsHira = fields.map(kanaToHira);
+                    const fieldsKana = fields.map(hiraToKana);
+                    return (
+                        fields.some(f => f.includes(query)) ||
+                        fieldsHira.some(f => f.includes(queryHira)) ||
+                        fieldsKana.some(f => f.includes(queryKana))
+                    );
             };
 
             const handleKeyPress = (e) => {
